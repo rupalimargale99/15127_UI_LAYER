@@ -1,6 +1,141 @@
 ﻿@{
+
+
+
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+
+
+<h1>@ViewData["Title"]</h1>
+<div>
+
+
+
+    CategoryId:
+
+
+
+    <input type="text" id="txtCategoryId" />
+
+
+
+    <br />
+
+
+
+    <input type="button" value="GetProductsByCategory" onclick="Find()" />
+
+
+
+    <table id="productTable" class="table-bordered">
+    </table>
+
+
+
+    <p id="p_product"></p>
+</div>
+
+
+
+<script>
+
+
+
+    function Find() {
+
+
+
+        var catid = $('#txtCategoryId').val();
+
+
+
+        var url = 'https://localhost:44373/api/products/category/' + catid;
+
+
+
+        $.ajax({
+
+
+
+            url: url,
+
+
+
+            dataType: 'json',
+
+
+
+            type: 'GET',
+
+
+
+            success: function (data) {
+
+
+
+                console.log(data)
+
+
+
+                $('#productTable').empty();
+
+
+
+                //add header row
+
+
+
+                var headerrow = '<tr> <th> ProductId</th> <th>ProductName</th> <th>Price<th> </tr>'
+
+
+
+                $('#productTable').append(headerrow)
+
+
+
+                //add data row
+
+
+
+                $.each(data, function (index, record) {
+
+
+
+                    var row = '<tr> <td>' + record.ProductId + '</td> <td>' + record.ProductName + '</td> <td>' + record.Price + '</td> </tr>'
+
+
+
+                    $('#productTable').append(row)
+
+
+
+                });
+
+
+
+            },
+
+
+
+            error: function (jqxhr, textstatus, err) {
+
+
+
+                alert('Error: ' + err + " " + jqxhr.status);
+
+
+
+            }
+
+
+
+        })
+
+
+
+    }
+
+
+
+</script>

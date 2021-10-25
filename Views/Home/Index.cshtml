@@ -1,23 +1,194 @@
-﻿@model IEnumerable<Product>
-
-@{
-    ViewData["Title"] = "Index";
+﻿@{
+    ViewData["Title"] = "Home Page";
 }
+<script src="~/lib/jquery/dist/jquery.js"></script>
 
-<h1>Index</h1>
+<h2 style="color:blue;font:bolder">
+    MVC Client APP-Index View
+</h2>
 
-<table class="table-striped">
-    <tr>
-        <th>ProductId</th>
-        <th>ProductName</th>
-        <th>Price</th>
-    </tr>
-    @foreach (Product item in Model)
-            {
-                <tr>
-                    <td>@item.ProductId</td>
-                    <td>@item.ProductName</td>
-                    <td>@item.Price</td>
-                </tr>
+
+<div>
+    <h3>Display All Products</h3>
+    <table id="productTable" class="table"></table>
+</div>
+
+<div>
+    <label for=" txtpid">ID :</label>
+    <input type="text" id="txtpid" size="5" />
+    <input type="button" value="search" onclick="find();" />
+    <p id="p_product" />
+</div>
+
+<div>
+    <h3>Add Product</h3>
+
+    <table>
+        <tr>
+            <td>
+                <label for="txtPid">Product Id : </label>
+            </td>
+            <td>
+                <input type="text" id="txtProdid" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="txtPName">Product Name : </label>
+            </td>
+            <td>
+                <input type="text" id="txtPName" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="txtPrice"> Price : </label>
+            </td>
+            <td>
+                <input type="text" id="txtPrice" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center">
+                <input type="button" value="Add Product" onclick="AddProduct();" />
+                <input type="button" value="Delete Product" onclick="DeleteProduct();" />
+                <input type="button" value="Update Product" onclick="UpdateProduct();" />
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+<script>
+    $(document).ready(LoadProductDetails());
+
+    function LoadProductDetails() {
+        var url = 'https://localhost:44373/api/products';
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'GET',
+            success: function (data) {
+                console.log(data)
+                $('#productTable').empty();
+                //add header row
+                var headerrow = '<tr> <th> ProductId</th> <th>ProductName</th> <th>Price<th> </tr>'
+                $('#productTable').append(headerrow)
+                //add data row
+                $.each(data, function (index, record) {
+                    var row = '<tr> <td>' + record.ProductId + '</td> <td>' + record.ProductName + '</td> <td>' + record.Price + '</td> </tr>'
+                    $('#productTable').append(row)
+                });
+            },
+            error: function (jqxhr, textstatus, err) {
+                alert('Error: ' + err + " " + jqxhr.status);
             }
-</table>
+        })
+    }
+
+    function find() {
+        var id = $('#txtpid').val();
+        $.getJSON('https://localhost:44373/api/products/' + id, function (data) {
+            var str = data.ProductId + " , " + data.ProductName + " , " + data.Price;
+            $('#p_product').text(str);
+
+            $('#txtProdid').val(data.ProductId)
+            $('#txtPName').val(data.ProductName);
+            $('#txtPrice').val(data.Price);
+        }).fail(function (jqxhr, textstatus, err) {
+            $('#p_product').text('Error : ' + jqxhr.status + " : " + jqxhr.responseText);
+        })
+    }
+
+    function AddProduct() {
+        //JavaScript variable
+        var pid = $('#txtProdid').val();
+        var pname = $('#txtPName').val();
+        var cost = $('#txtPrice').val();
+
+        //var obj={key:value ,key:value};
+
+        //JavaScript object
+        var product = { ProductId: pid, ProductName: pname, Price: cost }; //Javascript object
+
+        //JSON.stringify---Convert JavaScript object into JSON string
+        //JSon.parse-------Convert JSON string into JavaScript object
+
+        $.ajax({
+            type: "POST",
+            url: "https://localhost:44373/api/products",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(product),
+            success: function (result) {
+                console.log(result)
+                alert("Added");
+                $('#txtProdid').val('')
+                $('#txtPName').val('');
+                $('#txtPrice').val('');
+                LoadProductDetails();
+            },
+            error: function (jqxhr, textstatus, err) {
+                alert('Error : ' + jqxhr.status + " : " + jqxhr.responseText);
+            }
+        });
+    }
+
+    function DeleteProduct() {
+        
+        var pid = $('#txtProdid').val();
+
+        $.ajax({
+            type: "DELETE",
+            url: "https://localhost:44373/api/products/" + pid,
+            success: function (result) {
+                console.log(result)
+                alert("DELETED");
+                $('#txtProdid').val('')
+                $('#txtPName').val('');
+                $('#txtPrice').val('');
+                LoadProductDetails();
+            },
+            error: function (jqxhr, textstatus, err) {
+                alert('Error : ' + err + " " + jqxhr.responseText);
+            }
+        });
+            
+       
+    }
+
+    function UpdateProduct() {
+        var pid = $('#txtProdid').val();
+        var pname = $('#txtPName').val();
+        var cost = $('#txtPrice').val();
+
+        //var obj={key:value ,key:value};
+
+        //JavaScript object
+        var product = { ProductId: pid, ProductName: pname, Price: cost }; //Javascript object
+
+        //JSON.stringify---Convert JavaScript object into JSON string
+        //JSon.parse-------Convert JSON string into JavaScript object
+
+        $.ajax({
+            type: "PUT",
+            url: "https://localhost:44373/api/products/"+pid,
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(product),
+            success: function (result) {
+                console.log(result)
+                alert("Updated");
+                $('#txtProdid').val('')
+                $('#txtPName').val('');
+                $('#txtPrice').val('');
+                LoadProductDetails();
+            },
+            error: function (jqxhr, textstatus, err) {
+                alert('Error : ' + jqxhr.status + " : " + jqxhr.responseText);
+            }
+        });
+        
+    }
+
+</script>

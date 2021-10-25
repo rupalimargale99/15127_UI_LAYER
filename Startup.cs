@@ -8,10 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MVCCoreEFCF_DropDownDemo.Models;
-using Microsoft.EntityFrameworkCore;
 
-namespace MVCCoreEFCF_DropDownDemo
+namespace MVCApp_Client_ProductAPI
 {
     public class Startup
     {
@@ -26,12 +24,6 @@ namespace MVCCoreEFCF_DropDownDemo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-            string connstr = Configuration.GetConnectionString("MyDBConnection");
-
-            services.AddDbContext<EFCFContext>(options => { options.UseSqlServer(connstr); });
-
-            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +43,6 @@ namespace MVCCoreEFCF_DropDownDemo
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseSession();
 
             app.UseAuthorization();
 
