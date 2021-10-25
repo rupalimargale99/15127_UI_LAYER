@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="jQuery/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h2>REST Service Test Page</h2>
+    <div>
+        <h3>Display All Products</h3>
+        <table id="productTable" class="table"></table>
+    </div>
+
+    <script>
+        $(document).ready(LoadProductDetails());
+
+
+
+        function LoadProductDetails() {
+            var url = 'https://localhost:44373/api/products';
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                type: 'GET',
+                success: function (data) {
+                    console.log(data)
+                    $('#productTable').empty();
+                    //add header row
+                    var headerrow = '<tr> <th> ProductId</th> <th>ProductName</th> <th>Price<th> </tr>'
+                    $('#productTable').append(headerrow)
+                    //add data row
+                    $.each(data, function (index, record) {
+                        var row = '<tr> <td>' + record.ProductId + '</td> <td>' + record.ProductName + '</td> <td>' + record.Price + '</td> </tr>'
+                        $('#productTable').append(row)
+                    });
+                },
+                error: function (jqxhr, textstatus, err) {
+                    alert('Error: ' + err + " " + jqxhr.status);
+                }
+            })
+        }
+    </script>
+</body>
+</html>
+
+<!--
+
+<body>
+    <h3 id="1">
+        jQuery Demo
+    </h3>
+    <h3 id="2">
+        jQuery is JavaScript Library
+    </h3>
+
+
+
+    <input type="button" value="color" id="btnColor1" />
+    <input type="button" value="color" id="btnColor2" />
+
+    <hr />
+
+    <div>
+        <h5>getJson()</h5>
+        <div id="div1"></div>
+        <input type="button" id="btn1" value="GetJSON Method Demo" />
+    </div>
+
+    <div>
+        <h5>AJAX()</h5>
+        <div id="div2"></div>
+        <input type="button" id="btn2" value="AJAX Method Demo" />
+    </div>
+
+    <div>
+        Number: <input type="text" id="txtFirst" />
+        <br />
+        Number:<input type="text" id="txtSecond" />
+        <br />
+        <button id="btnAdd">Addition</button>
+        <br />
+        <label id="lblResult">result</label>
+    </div>
+
+    <script>
+        // $("selector").method();
+        //selector - element / id / class
+
+        //red color to all text
+        //$("h3").css("color", "red")
+
+        //red color for specific text
+        $("#1").css("color", "red");
+
+        //on click of button change color
+        $(document).ready(
+            function () {
+
+                //blue color to 1st text on click of button 1
+                $("#btnColor1").click(function () {
+                    $("#1").css("color", "blue")
+                })
+
+                //green color to 1st text on click of button 1
+                //if want to give to 2nd text change #1 to #2
+                $("#btnColor2").click(function () {
+                    $("#1").css("color", "green")
+                })
+
+
+                $("#btn1").click(function () {
+                    //$.getJSON("url", sucess function())
+                    $.getJSON("https://localhost:44373/js/person.js", function (result) {
+                        $("#div1").append("GetJSON result<br/>");
+                        $.each(result, function (index, value) {
+                            $("#div1").append(index + " : " + value.firstName + " " + value.lastName + "<br/>");
+                        });
+                    });
+
+                });
+
+                $("#btn2").click(function () {
+                    $(function () {
+                        $.ajax({
+                            "url": "https://localhost:44373/js/person.js",
+                            "type": "get",
+                            "dataType": "json",
+                            "success": function (result) {
+                                $.each(result, function (index, value) {
+                                    $("#div2").append(index + " : " + value.firstName + " " + value.lastName + "<br/>");
+                                });
+                            },
+                            "error": function (data) {
+                                $("#div1").append("error : ");
+                                $("#div1").append(data.error);
+                            }
+                        });
+                    });
+                });
+                $("#btnAdd").click(function () {
+                    var result = parseInt($("#txtFirst").val()) + parseInt($("#txtSecond").val());
+                    $("#lblResult").text(result)
+                })
+
+
+            });
+    </script>
+</body>
+</html>-->
