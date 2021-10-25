@@ -1,0 +1,28 @@
+﻿@model MVCCoreEFCF_DropdownDemo.ViewModels.DropdownViewModel
+@{
+    ViewData["Title"] = "DropdownDemo";
+}
+
+<h1>DropdownDemo</h1>
+
+<div class="col-md-4">
+    <form asp-controller="Home" asp-action="DropdownDemo" method="post">
+        <div class="form-group">
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(Model.CategoryList,"Value","Text"))" onchange="this.form.submit()">
+            </select>
+        </div>
+    </form>
+</div>
+
+<hr />
+<table class=" table-borderless">
+    @foreach(var item in Model.ProductList)
+            {
+                <tr>
+                    <td>@item.ProductId</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.Price</td>
+                </tr>
+            }
+</table>
